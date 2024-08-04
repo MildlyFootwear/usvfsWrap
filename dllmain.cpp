@@ -40,7 +40,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
     }
 }
 
-VOID WINAPI usvfsWrapLinkDirectoryStatic(char* source, char* destination, unsigned int flags)
+VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination, unsigned int flags)
 {
-
+    usvfsVirtualLinkDirectoryStatic(ToW(source), ToW(destination), flags);
 }
