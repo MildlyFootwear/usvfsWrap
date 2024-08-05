@@ -23,12 +23,15 @@ wchar_t* ToW(const char* charArray)
 
 }
 
+BOOL static debug = FALSE;
+
 BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine)
 {
     STARTUPINFOW si{ 0 };
     si.cb = sizeof(si);
     PROCESS_INFORMATION pi{ 0 };
-
+    if (debug)
+        printf("\nusvfsWrapCreateProcessHooked: %s with args %s", lpApplicationName, lpCommandLine);
     if (usvfsCreateProcessHooked(ToW(lpApplicationName), ToW(lpCommandLine), nullptr, nullptr, TRUE, 0, 0, nullptr, &si, &pi)) {
 
         WaitForSingleObject(pi.hProcess, INFINITE);
@@ -45,12 +48,26 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
 VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination, unsigned int flags)
 {
     usvfsVirtualLinkDirectoryStatic(ToW(source), ToW(destination), flags);
+    if (debug)
+        printf("\nusvfsWrapVirtualLinkDirectoryStatic: %s to %s.", source, destination);
+    if (flags == 0x00000001)
+        printf(" Flag was FAILIFEXISTS.");
+    else if(flags == 0x00000002)
+        printf(" Flag was MONITORCHANGES.");
+    else if (flags == 0x00000004)
+        printf(" Flag was CREATETARGET.");
+    else if (flags == 0x00000008)
+        printf(" Flag was RECURSIVE.");
+    else if (flags == 0x00000010)
+        printf(" Flag was FAILIFSKIPPED.");
     return;
 }
 
 VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned int flags)
 {
-    usvfsVirtualLinkDirectoryStatic(ToW(source), ToW(destination), flags);
+    usvfsVirtualLinkFile(ToW(source), ToW(destination), flags);
+    if (debug)
+        printf("\nusvfsWrapVirtualLinkFile: %s to %s", source, destination);
     return;
 }
 
@@ -74,10 +91,19 @@ int WINAPI usvfsWrapGetHookedCount()
 
 VOID WINAPI usvfsWrapAddSkipFileSuffix(char* fileSuffix)
 {
+    if (debug)
+        printf("\nusvfsWrapAddSkipFileSuffix: %s", fileSuffix);
     usvfsAddSkipFileSuffix(ToW(fileSuffix));
 }
 
 VOID WINAPI usvfsWrapAddSkipDirectory(char* directory)
 {
+    if (debug)
+        printf("\nusvfsWrapAddSkipDirectory: %s", directory);
     usvfsAddSkipDirectory(ToW(directory));
+}
+
+VOID WINAPI usvfsWrapSetDebug(BOOL b) {
+    debug = b;
+    printf("\nusvfsWrapSetDebug: Set debug to %d", debug);
 }

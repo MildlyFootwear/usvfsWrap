@@ -10,3 +10,5 @@ extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapVirtualLinkFile(char* sour
 extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapCreateVFSDump();
 extern "C" __declspec(dllexport) int WINAPI usvfsWrapGetHookedCount();
 extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapAddSkipFileSuffix(char* fileSuffix);
+extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapAddSkipDirectory(char* directory);
+extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapSetDebug(BOOL b);
