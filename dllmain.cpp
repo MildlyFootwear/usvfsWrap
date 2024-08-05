@@ -5,7 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <regex>
-
+#include <WTypes.h>
+#include <comutil.h>
+#include "oleauto.h"
 #include "pch.h"
 #include "Header.h"
 #include "include/usvfs.h"
@@ -43,4 +45,27 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
 VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination, unsigned int flags)
 {
     usvfsVirtualLinkDirectoryStatic(ToW(source), ToW(destination), flags);
+}
+
+VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned int flags)
+{
+    usvfsVirtualLinkDirectoryStatic(ToW(source), ToW(destination), flags);
+}
+
+BSTR WINAPI usvfsWrapCreateVFSDump()
+{
+    size_t len = 69420;
+    size_t* length = &len;
+    char dump[69420];
+    usvfsCreateVFSDump(dump, length);
+    BSTR result = NULL;
+    int lenA = lstrlenA(dump);
+    int lenW = ::MultiByteToWideChar(CP_ACP, 0, dump, lenA, NULL, 0);
+    if (lenW > 0)
+    {
+        result = ::SysAllocStringLen(0, lenW);
+        ::MultiByteToWideChar(CP_ACP, 0, dump, lenA, result, lenW);
+    }
+    return result;
+    //return ANSItoBSTR(dump);
 }
