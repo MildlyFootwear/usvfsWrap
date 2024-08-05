@@ -71,3 +71,13 @@ int WINAPI usvfsWrapGetHookedCount()
     usvfsGetVFSProcessList(&processcount, processids);
     return processcount;
 }
+
+VOID WINAPI usvfsWrapAddSkipFileSuffix(char* fileSuffix)
+{
+    usvfsAddSkipFileSuffix(ToW(fileSuffix));
+}
+
+VOID WINAPI usvfsWrapAddSkipDirectory(char* directory)
+{
+    usvfsAddSkipDirectory(ToW(directory));
+}
