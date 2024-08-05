@@ -31,7 +31,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
     si.cb = sizeof(si);
     PROCESS_INFORMATION pi{ 0 };
     if (debug)
-        printf("\nusvfsWrapCreateProcessHooked: %s with args %s", lpApplicationName, lpCommandLine);
+        printf("usvfsWrapCreateProcessHooked: %s with args %s\n", lpApplicationName, lpCommandLine);
     if (usvfsCreateProcessHooked(ToW(lpApplicationName), ToW(lpCommandLine), nullptr, nullptr, TRUE, 0, 0, nullptr, &si, &pi)) {
 
         WaitForSingleObject(pi.hProcess, INFINITE);
@@ -49,17 +49,22 @@ VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination,
 {
     usvfsVirtualLinkDirectoryStatic(ToW(source), ToW(destination), flags);
     if (debug)
-        printf("\nusvfsWrapVirtualLinkDirectoryStatic: %s to %s.", source, destination);
-    if (flags == 0x00000001)
-        printf(" Flag was FAILIFEXISTS.");
-    else if(flags == 0x00000002)
-        printf(" Flag was MONITORCHANGES.");
-    else if (flags == 0x00000004)
-        printf(" Flag was CREATETARGET.");
-    else if (flags == 0x00000008)
-        printf(" Flag was RECURSIVE.");
-    else if (flags == 0x00000010)
-        printf(" Flag was FAILIFSKIPPED.");
+    {
+
+        printf("usvfsWrapVirtualLinkDirectoryStatic: %s to %s.", source, destination);
+        if (flags == 0x00000001)
+            printf(" Flag was FAILIFEXISTS.");
+        else if(flags == 0x00000002)
+            printf(" Flag was MONITORCHANGES.");
+        else if (flags == 0x00000004)
+            printf(" Flag was CREATETARGET.");
+        else if (flags == 0x00000008)
+            printf(" Flag was RECURSIVE.");
+        else if (flags == 0x00000010)
+            printf(" Flag was FAILIFSKIPPED.");
+        printf("\n");
+    }
+
     return;
 }
 
@@ -67,7 +72,7 @@ VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned i
 {
     usvfsVirtualLinkFile(ToW(source), ToW(destination), flags);
     if (debug)
-        printf("\nusvfsWrapVirtualLinkFile: %s to %s", source, destination);
+        printf("usvfsWrapVirtualLinkFile: %s to %s\n", source, destination);
     return;
 }
 
@@ -92,18 +97,18 @@ int WINAPI usvfsWrapGetHookedCount()
 VOID WINAPI usvfsWrapAddSkipFileSuffix(char* fileSuffix)
 {
     if (debug)
-        printf("\nusvfsWrapAddSkipFileSuffix: %s", fileSuffix);
+        printf("usvfsWrapAddSkipFileSuffix: %s\n", fileSuffix);
     usvfsAddSkipFileSuffix(ToW(fileSuffix));
 }
 
 VOID WINAPI usvfsWrapAddSkipDirectory(char* directory)
 {
     if (debug)
-        printf("\nusvfsWrapAddSkipDirectory: %s", directory);
+        printf("usvfsWrapAddSkipDirectory: %s\n", directory);
     usvfsAddSkipDirectory(ToW(directory));
 }
 
 VOID WINAPI usvfsWrapSetDebug(BOOL b) {
     debug = b;
-    printf("\nusvfsWrapSetDebug: Set debug to %d", debug);
+    printf("usvfsWrapSetDebug: Set debug to %d\n", debug);
 }
