@@ -118,7 +118,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ShowProgress>LinkVerbose</ShowProgress>
-      <AdditionalDependencies>C:\Users\rhett\source\repos\usvfsWrap\lib\usvfs_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\rhett\source\repos\usvfsWrap\lib\usvfs_x64.lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.26100.0\um\x64\OleAut32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +139,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ShowProgress>LinkVerbose</ShowProgress>
-      <AdditionalDependencies>C:\Users\rhett\source\repos\usvfsWrap\lib\usvfs_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\rhett\source\repos\usvfsWrap\lib\usvfs_x64.lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.26100.0\um\x64\OleAut32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
