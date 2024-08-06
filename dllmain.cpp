@@ -24,7 +24,6 @@ wchar_t* ToW(const char* charArray)
 }
 
 BOOL static debug = FALSE;
-char static dump[420420];
 
 BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine)
 {
@@ -80,6 +79,7 @@ char* WINAPI usvfsWrapCreateVFSDump()
 {
     size_t len = 420420;
     size_t* length = &len;
+    char dump[420420];
     usvfsCreateVFSDump(dump, length);
     return dump;
 }
