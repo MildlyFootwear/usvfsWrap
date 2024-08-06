@@ -24,6 +24,7 @@ wchar_t* ToW(const char* charArray)
 }
 
 BOOL static debug = FALSE;
+char static dump[420420];
 
 BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine)
 {
@@ -40,7 +41,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
         return true;
     }
     else {
-        printf("\nCreation of process %s failed", lpApplicationName);
+        printf("Creation of process %s failed\n", lpApplicationName);
         return false;
     }
 }
@@ -50,7 +51,6 @@ VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination,
     usvfsVirtualLinkDirectoryStatic(ToW(source), ToW(destination), flags);
     if (debug)
     {
-
         printf("usvfsWrapVirtualLinkDirectoryStatic: %s to %s.", source, destination);
         if (flags == 0x00000001)
             printf(" Flag was FAILIFEXISTS.");
@@ -76,14 +76,12 @@ VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned i
     return;
 }
 
-VOID WINAPI usvfsWrapCreateVFSDump()
+char* WINAPI usvfsWrapCreateVFSDump()
 {
     size_t len = 420420;
     size_t* length = &len;
-    char dump[420420];
     usvfsCreateVFSDump(dump, length);
-    printf(dump);
-    return;
+    return dump;
 }
 
 int WINAPI usvfsWrapGetHookedCount()
