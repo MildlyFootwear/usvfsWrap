@@ -33,7 +33,8 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
     if (debug)
         printf("usvfsWrapCreateProcessHooked: %s with args %s\n", lpApplicationName, lpCommandLine);
     if (usvfsCreateProcessHooked(ToW(lpApplicationName), ToW(lpCommandLine), nullptr, nullptr, TRUE, 0, 0, nullptr, &si, &pi)) {
-
+        if (debug)
+            printf("usvfsWrapCreateProcessHooked: hook success!\n");
         WaitForSingleObject(pi.hProcess, INFINITE);
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
@@ -63,7 +64,6 @@ VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination,
             printf(" Flag was FAILIFSKIPPED.");
         printf("\n");
     }
-
     return;
 }
 
