@@ -1,4 +1,4 @@
-// lpApplicationName should be the full path to the executable. lpCommandLine will be the arguments passed to it as if they were right after it in a shortcut.
+// lpApplicationName should be the full path to the executable. lpCommandLine will be the arguments passed to it as if they were right after it in a shortcut. Executing thread will halt until the launched application exits. It'd be wise to create a dedicated thread to launch from.
 
 [DllImport("usvfsWrap.dll")] public static extern bool usvfsWrapCreateProcessHooked(string lpApplicationName, string lpCommandLine);
 
