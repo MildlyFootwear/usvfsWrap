@@ -70,7 +70,20 @@ VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination,
 VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned int flags)
 {
     if (debug)
+    {
         printf("usvfsWrapVirtualLinkFile: %s to %s\n", source, destination);
+        if (flags == 0x00000001)
+            printf(" Flag was FAILIFEXISTS.");
+        else if (flags == 0x00000002)
+            printf(" Flag was MONITORCHANGES.");
+        else if (flags == 0x00000004)
+            printf(" Flag was CREATETARGET.");
+        else if (flags == 0x00000008)
+            printf(" Flag was RECURSIVE.");
+        else if (flags == 0x00000010)
+            printf(" Flag was FAILIFSKIPPED.");
+    }
+        
     usvfsVirtualLinkFile(ToW(source), ToW(destination), flags);
     return;
 }
