@@ -5,6 +5,7 @@
 #include <WTypes.h>
 
 extern "C" __declspec(dllexport) BOOL usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine);
+extern "C" __declspec(dllexport) DWORD WINAPI usvfsWrapGetLastHookedID();
 extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination, unsigned int flags);
 extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned int flags);
 extern "C" __declspec(dllexport) char* WINAPI usvfsWrapCreateVFSDump();

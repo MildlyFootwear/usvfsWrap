@@ -24,7 +24,7 @@ wchar_t* ToW(const char* charArray)
 }
 
 BOOL static debug = FALSE;
-
+DWORD static latestHookedID = 0;
 BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine)
 {
     STARTUPINFOW si{ 0 };
@@ -35,6 +35,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
     if (usvfsCreateProcessHooked(ToW(lpApplicationName), ToW(lpCommandLine), nullptr, nullptr, TRUE, 0, 0, nullptr, &si, &pi)) {
         if (debug)
             printf("usvfsWrapCreateProcessHooked: hook success!\n");
+        latestHookedID = GetProcessId(pi.hProcess);
         WaitForSingleObject(pi.hProcess, INFINITE);
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
@@ -44,6 +45,11 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
         printf("usvfsWrapCreateProcessHooked: Creation of process %s failed\n", lpApplicationName);
         return false;
     }
+}
+
+DWORD WINAPI usvfsWrapGetLastHookedID()
+{
+    return latestHookedID;
 }
 
 VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination, unsigned int flags)
