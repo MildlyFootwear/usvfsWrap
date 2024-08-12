@@ -16,7 +16,8 @@
 
 wchar_t* ToW(const char* charArray)
 {
-
+    if (charArray == nullptr)
+        return nullptr;
     wchar_t* wString = new wchar_t[4096];
     MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
     return wString;
@@ -66,14 +67,17 @@ void WINAPI usvfsWrapFree()
     else { printf("usvfsWrapFree: no VFS to free\n"); }
 }
 
-BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine)
+BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine, DWORD creationFlags, char* workingDir)
 {
     STARTUPINFOW si{ 0 };
     si.cb = sizeof(si);
     PROCESS_INFORMATION pi{ 0 };
+    LPWSTR processedCommands = ToW(lpCommandLine);
     if (debug)
-        printf("usvfsWrapCreateProcessHooked: %s with args %s\n", lpApplicationName, lpCommandLine);
-    if (usvfsCreateProcessHooked(ToW(lpApplicationName), ToW(lpCommandLine), nullptr, nullptr, TRUE, 0, 0, nullptr, &si, &pi)) {
+        printf("usvfsWrapCreateProcessHooked:\nExe: %s\nArgs: %s\nFlags: %d\nworkingDir: %s\n", lpApplicationName, lpCommandLine, creationFlags, workingDir);
+    if (processedCommands == nullptr)
+        processedCommands = L"";
+    if (usvfsCreateProcessHooked(ToW(lpApplicationName), processedCommands, nullptr, nullptr, TRUE, creationFlags, 0, ToW(workingDir), &si, &pi)) {
         if (debug)
             printf("usvfsWrapCreateProcessHooked: hook success!\n");
         latestHookedID = GetProcessId(pi.hProcess);
@@ -83,7 +87,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
         return true;
     }
     else {
-        printf("usvfsWrapCreateProcessHooked: Creation of process %s failed\n", lpApplicationName);
+        printf("usvfsWrapCreateProcessHooked: Creation failed\n", lpApplicationName);
         return false;
     }
 }
@@ -137,9 +141,18 @@ VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned i
 
 BOOL WINAPI usvfsWrapCreateVFSDump(char* path)
 {
-    FILE* dumpFile = fopen(path, "w+");
+    FILE* dumpFile = nullptr;
+    if (path != nullptr)
+        dumpFile = fopen(path, "w");
+
     if (!dumpFile)
-        dumpFile = fopen("usvfsWrapVFSDump.log", "w+");
+    {
+        dumpFile = fopen("usvfsWrapVFSDump.log", "w");
+        printf("usvfsWrapCreateVFSDump: dumping to usvfsWrapVFSDump.log\n");
+    }
+    else
+        printf("usvfsWrapCreateVFSDump: dumping to %s\n", path);
+
     if (dumpFile)
     {
         usvfsCreateVFSDump(dump, length);

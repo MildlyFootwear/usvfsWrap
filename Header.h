@@ -9,7 +9,7 @@
 
 extern "C" __declspec(dllexport) BOOL WINAPI usvfsWrapCreateVFS(char* Name, bool Debug, LogLevel log, CrashDumpsType type, char* dumpPath, int delay);
 extern "C" __declspec(dllexport) void WINAPI usvfsWrapFree();
-extern "C" __declspec(dllexport) BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine);
+extern "C" __declspec(dllexport) BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine, DWORD creationFlags, char* workingDir));
 extern "C" __declspec(dllexport) DWORD WINAPI usvfsWrapGetLastHookedID();
 extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination, unsigned int flags);
 extern "C" __declspec(dllexport) VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned int flags);
