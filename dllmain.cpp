@@ -24,7 +24,45 @@ wchar_t* ToW(const char* charArray)
 }
 
 BOOL static debug = FALSE;
+BOOL static vfsCreated = false;
 DWORD static latestHookedID = 0;
+usvfsParameters* p;
+
+size_t len = 420420;
+size_t* length = &len;
+char dump[420420];
+
+BOOL WINAPI usvfsWrapCreateVFS(char* Name, bool Debug, LogLevel log, CrashDumpsType type, char* dumpPath, int delay)
+{
+    if (vfsCreated)
+    {
+        if (debug)
+            printf("usvfsWrapCreateVFS: already created\n");
+        return false;
+    }
+    vfsCreated = true;
+    p = usvfsCreateParameters();
+    if (Debug)
+        printf("usvfsWrapCreateVFS: parameters\n%s\n%d\n%d\n%d\n%s\n%d\n", Name, Debug, log, type, dumpPath, delay);
+    usvfsSetInstanceName(p, Name);
+    usvfsSetDebugMode(p, Debug);
+    usvfsSetLogLevel(p, log);
+    usvfsSetCrashDumpType(p, type);
+    usvfsSetCrashDumpPath(p, dumpPath);
+    usvfsSetProcessDelay(p, delay);
+    usvfsCreateVFS(p);
+}
+
+void WINAPI usvfsWrapFree()
+{
+    if (vfsCreated)
+    {
+        usvfsDisconnectVFS();
+        usvfsFreeParameters(p);
+        vfsCreated = false;
+    }
+}
+
 BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine)
 {
     STARTUPINFOW si{ 0 };
@@ -94,11 +132,29 @@ VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned i
     return;
 }
 
-char* WINAPI usvfsWrapCreateVFSDump()
+BOOL WINAPI usvfsWrapCreateVFSDump(char* path)
 {
-    size_t len = 420420;
-    size_t* length = &len;
-    char dump[420420];
+    FILE* dumpFile = fopen(path, "r");
+    bool createDumpFile = false;
+    if (dumpFile)
+        dumpFile = fopen(path, "w+");
+    if (!dumpFile)
+        dumpFile = fopen("usvfsWrapVFSDump.log", "w+");
+    if (dumpFile)
+    {
+        usvfsCreateVFSDump(dump, length);
+        fprintf(dumpFile, dump);
+        fclose(dumpFile);
+        return true;
+    }
+    else {
+        printf("usvfsWrapCreateVFSDump: couldn't create dump\n");
+        return false;
+    }
+}
+
+char* WINAPI usvfsWrapReturnVFSDump()
+{
     usvfsCreateVFSDump(dump, length);
     return dump;
 }
