@@ -74,7 +74,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
     PROCESS_INFORMATION pi{ 0 };
     LPWSTR processedCommands = ToW(lpCommandLine);
     if (debug)
-        printf("usvfsWrapCreateProcessHooked:\nExe: %s\nArgs: %s\nFlags: %d\nworkingDir: %s\n", lpApplicationName, lpCommandLine, creationFlags, workingDir);
+        printf("usvfsWrapCreateProcessHooked:\n    Exe: %s\n    Args: %s\n    Flags: %d\n    workingDir: %s\n", lpApplicationName, lpCommandLine, creationFlags, workingDir);
     if (processedCommands == nullptr)
         processedCommands = ToW("");
     if (usvfsCreateProcessHooked(ToW(lpApplicationName), processedCommands, nullptr, nullptr, TRUE, creationFlags, 0, ToW(workingDir), &si, &pi)) {
