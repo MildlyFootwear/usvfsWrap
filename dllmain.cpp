@@ -42,8 +42,9 @@ BOOL WINAPI usvfsWrapCreateVFS(char* Name, bool Debug, LogLevel log, CrashDumpsT
     }
     vfsCreated = true;
     p = usvfsCreateParameters();
-    if (Debug)
+    if (debug)
         printf("usvfsWrapCreateVFS: parameters\n%s\n%d\n%d\n%d\n%s\n%d\n", Name, Debug, log, type, dumpPath, delay);
+
     usvfsSetInstanceName(p, Name);
     usvfsSetDebugMode(p, Debug);
     usvfsSetLogLevel(p, log);
@@ -51,6 +52,7 @@ BOOL WINAPI usvfsWrapCreateVFS(char* Name, bool Debug, LogLevel log, CrashDumpsT
     usvfsSetCrashDumpPath(p, dumpPath);
     usvfsSetProcessDelay(p, delay);
     usvfsCreateVFS(p);
+    return true;
 }
 
 void WINAPI usvfsWrapFree()
@@ -61,6 +63,7 @@ void WINAPI usvfsWrapFree()
         usvfsFreeParameters(p);
         vfsCreated = false;
     }
+    else { printf("usvfsWrapFree: no VFS to free\n"); }
 }
 
 BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpCommandLine)
@@ -134,10 +137,7 @@ VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned i
 
 BOOL WINAPI usvfsWrapCreateVFSDump(char* path)
 {
-    FILE* dumpFile = fopen(path, "r");
-    bool createDumpFile = false;
-    if (dumpFile)
-        dumpFile = fopen(path, "w+");
+    FILE* dumpFile = fopen(path, "w+");
     if (!dumpFile)
         dumpFile = fopen("usvfsWrapVFSDump.log", "w+");
     if (dumpFile)
