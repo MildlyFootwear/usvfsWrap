@@ -1,4 +1,4 @@
-namespace usvfsWrap
+namespace usvfsWrapExample
 {
     public class usvfsWrapM
     {
@@ -25,9 +25,9 @@ namespace usvfsWrap
         [DllImport("usvfsWrap.dll")] public static extern void usvfsWrapSetDebug(bool b);
 
         /// <summary>
-        /// Safe method to initialize a VFS. Can only initialize one at a time, which will need to be freed with usvfsWrapFree.
+        /// Safe method to initialize a VFS. Can only initialize one at a time, which will need to be freed with usvfsWrapFree once no longer in use.
         /// </summary>
-        [DllImport("usvfsWrap.dll")] public static extern bool usvfsWrapCreateVFS(string Name, bool Debug, LogLevel log, CrashDumpsType crashtype, string dumpPath, int delay);
+        [DllImport("usvfsWrap.dll")] public static extern bool usvfsWrapCreateVFS(string instanceName, bool Debug, LogLevel logLevel, CrashDumpsType crashtype, string dumpPath, int delay);
         /// <summary>
         /// Frees the last created VFS.
         /// </summary>
