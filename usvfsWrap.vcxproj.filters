@@ -45,7 +45,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="CSharp DLL Import Template.cs" />
-  </ItemGroup>
 </Project>

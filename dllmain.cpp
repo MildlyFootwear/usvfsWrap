@@ -87,7 +87,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
         return true;
     }
     else {
-        printf("usvfsWrapCreateProcessHooked: Creation failed\n", lpApplicationName);
+        printf("usvfsWrapCreateProcessHooked: Creation failed\n");
         return false;
     }
 }
@@ -172,7 +172,7 @@ char* WINAPI usvfsWrapReturnVFSDump()
     return dump;
 }
 
-int WINAPI usvfsWrapGetHookedCount()
+size_t WINAPI usvfsWrapGetHookedCount()
 {
     size_t processcount = 128;
     LPDWORD processids = new DWORD;
