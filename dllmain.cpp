@@ -134,8 +134,10 @@ VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned i
         else if (flags == 0x00000010)
             printf(" Flag was FAILIFSKIPPED.");
     }
-        
-    usvfsVirtualLinkFile(ToW(source), ToW(destination), flags);
+    try {
+        usvfsVirtualLinkFile(ToW(source), ToW(destination), flags);
+    }
+    catch {printf("Exception: usvfsWrapVirtualLinkFile failed to execute.");}
     return;
 }
 
