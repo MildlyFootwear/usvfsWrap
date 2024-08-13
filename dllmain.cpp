@@ -24,7 +24,7 @@ wchar_t* ToW(const char* charArray)
 
 }
 
-BOOL static debug = FALSE;
+BOOL static BOOLusvfsWrapDebug = FALSE;
 BOOL static vfsCreated = false;
 DWORD static latestHookedID = 0;
 usvfsParameters* p;
@@ -37,13 +37,13 @@ BOOL WINAPI usvfsWrapCreateVFS(char* Name, bool Debug, LogLevel log, CrashDumpsT
 {
     if (vfsCreated)
     {
-        if (debug)
+        if (BOOLusvfsWrapDebug)
             printf("usvfsWrapCreateVFS: already created\n");
         return false;
     }
     vfsCreated = true;
     p = usvfsCreateParameters();
-    if (debug)
+    if (BOOLusvfsWrapDebug)
         printf("usvfsWrapCreateVFS: parameters\n%s\n%d\n%d\n%d\n%s\n%d\n", Name, Debug, log, type, dumpPath, delay);
 
     usvfsSetInstanceName(p, Name);
@@ -73,12 +73,12 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
     si.cb = sizeof(si);
     PROCESS_INFORMATION pi{ 0 };
     LPWSTR processedCommands = ToW(lpCommandLine);
-    if (debug)
+    if (BOOLusvfsWrapDebug)
         printf("usvfsWrapCreateProcessHooked:\n    Exe: %s\n    Args: %s\n    Flags: %d\n    workingDir: %s\n", lpApplicationName, lpCommandLine, creationFlags, workingDir);
     if (processedCommands == nullptr)
         processedCommands = ToW("");
     if (usvfsCreateProcessHooked(ToW(lpApplicationName), processedCommands, nullptr, nullptr, TRUE, creationFlags, 0, ToW(workingDir), &si, &pi)) {
-        if (debug)
+        if (BOOLusvfsWrapDebug)
             printf("usvfsWrapCreateProcessHooked: hook success!\n");
         latestHookedID = GetProcessId(pi.hProcess);
         WaitForSingleObject(pi.hProcess, INFINITE);
@@ -99,7 +99,7 @@ DWORD WINAPI usvfsWrapGetLastHookedID()
 
 VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination, unsigned int flags)
 {
-    if (debug)
+    if (BOOLusvfsWrapDebug)
     {
         printf("usvfsWrapVirtualLinkDirectoryStatic: %s to %s.", source, destination);
         if (flags == 0x00000001)
@@ -120,7 +120,7 @@ VOID WINAPI usvfsWrapVirtualLinkDirectoryStatic(char* source, char* destination,
 
 VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned int flags)
 {
-    if (debug)
+    if (BOOLusvfsWrapDebug)
     {
         printf("usvfsWrapVirtualLinkFile: %s to %s\n", source, destination);
         if (flags == 0x00000001)
@@ -184,19 +184,19 @@ size_t WINAPI usvfsWrapGetHookedCount()
 
 VOID WINAPI usvfsWrapAddSkipFileSuffix(char* fileSuffix)
 {
-    if (debug)
+    if (BOOLusvfsWrapDebug)
         printf("usvfsWrapAddSkipFileSuffix: %s\n", fileSuffix);
     usvfsAddSkipFileSuffix(ToW(fileSuffix));
 }
 
 VOID WINAPI usvfsWrapAddSkipDirectory(char* directory)
 {
-    if (debug)
+    if (BOOLusvfsWrapDebug)
         printf("usvfsWrapAddSkipDirectory: %s\n", directory);
     usvfsAddSkipDirectory(ToW(directory));
 }
 
 VOID WINAPI usvfsWrapSetDebug(BOOL b) {
-    debug = b;
-    printf("usvfsWrapSetDebug: Set debug to %d\n", debug);
+    BOOLusvfsWrapDebug = b;
+    printf("usvfsWrapSetDebug: Set debug to %d\n", BOOLusvfsWrapDebug);
 }
