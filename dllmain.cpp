@@ -28,9 +28,9 @@ BOOL static vfsCreated = false;
 DWORD static latestHookedID = 0;
 usvfsParameters* p;
 
-size_t len = 420420;
+size_t len = 524288;
 size_t* length = &len;
-char dump[420420];
+char dump[524288];
 
 size_t static processcount = 128;
 LPDWORD static processids = new DWORD;
@@ -183,7 +183,7 @@ size_t WINAPI usvfsWrapGetHookedCount()
 {
     try 
     {
-        usvfsGetVFSProcessList(&processcount, processids);
+        usvfsGetVFSProcessList(&processcount, nullptr);
         return processcount;
     }
     catch (...)
