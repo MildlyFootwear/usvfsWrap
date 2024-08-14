@@ -7,7 +7,6 @@
 #include <regex>
 #include <WTypes.h>
 #include <comutil.h>
-#include <oleauto.h>
 #include "pch.h"
 #include "Header.h"
 #include "include/usvfs.h"
@@ -77,7 +76,7 @@ BOOL WINAPI usvfsWrapCreateProcessHooked(char* lpApplicationName, char* lpComman
         printf("usvfsWrapCreateProcessHooked:\n    Exe: %s\n    Args: %s\n    Flags: %d\n    workingDir: %s\n", lpApplicationName, lpCommandLine, creationFlags, workingDir);
     if (processedCommands == nullptr)
         processedCommands = ToW("");
-    if (usvfsCreateProcessHooked(ToW(lpApplicationName), processedCommands, nullptr, nullptr, TRUE, creationFlags, 0, ToW(workingDir), &si, &pi)) {
+    if (usvfsCreateProcessHooked(ToW(lpApplicationName), processedCommands, nullptr, nullptr, FALSE, creationFlags, 0, ToW(workingDir), &si, &pi)) {
         if (BOOLusvfsWrapDebug)
             printf("usvfsWrapCreateProcessHooked: hook success!\n");
         latestHookedID = GetProcessId(pi.hProcess);
@@ -137,7 +136,10 @@ VOID WINAPI usvfsWrapVirtualLinkFile(char* source, char* destination, unsigned i
     try {
         usvfsVirtualLinkFile(ToW(source), ToW(destination), flags);
     }
-    catch {printf("Exception: usvfsWrapVirtualLinkFile failed to execute.");}
+    catch(...)
+    {
+        printf("Exception: usvfsWrapVirtualLinkFile failed to execute.");
+    }
     return;
 }
 
@@ -176,10 +178,17 @@ char* WINAPI usvfsWrapReturnVFSDump()
 
 size_t WINAPI usvfsWrapGetHookedCount()
 {
-    size_t processcount = 128;
-    LPDWORD processids = new DWORD;
-    usvfsGetVFSProcessList(&processcount, processids);
-    return processcount;
+    try 
+    {
+        size_t processcount = 128;
+        LPDWORD processids = new DWORD;
+        usvfsGetVFSProcessList(&processcount, processids);
+        return processcount;
+    }
+    catch (...)
+    {
+        printf("Exception: usvfsWrapGetHookedCount failed to execute\n");
+    }
 }
 
 VOID WINAPI usvfsWrapAddSkipFileSuffix(char* fileSuffix)
