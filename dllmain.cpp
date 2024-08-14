@@ -32,6 +32,9 @@ size_t len = 420420;
 size_t* length = &len;
 char dump[420420];
 
+size_t static processcount = 128;
+LPDWORD static processids = new DWORD;
+
 BOOL WINAPI usvfsWrapCreateVFS(char* Name, bool Debug, LogLevel log, CrashDumpsType type, char* dumpPath, int delay)
 {
     if (vfsCreated)
@@ -180,8 +183,6 @@ size_t WINAPI usvfsWrapGetHookedCount()
 {
     try 
     {
-        size_t processcount = 128;
-        LPDWORD processids = new DWORD;
         usvfsGetVFSProcessList(&processcount, processids);
         return processcount;
     }
